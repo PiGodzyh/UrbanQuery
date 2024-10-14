@@ -17,6 +17,15 @@ export default defineConfig({
       resolvers: [ElementPlusResolver()],
     }),
   ],
+  server: {
+    proxy: {
+      '/wikipediaAPI': {
+        target: 'https://zh.wikipedia.org',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/wikipediaAPI/, '')
+      }
+    }
+  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))

@@ -1,47 +1,143 @@
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
-</script>
-
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
+  <div class="common-layout">
+    <el-container>
+      <el-header>
+        <CityNameInput />
+        <SearchButton @click="fetchData" />
+      </el-header>
+      <el-main>
+        <el-row :gutter="24" class="outer-row">
+          <el-col :span="16">
+            <el-row :gutter="24" class="inner-row">
+              <el-col :span="8">
+                <div class="grid-content ep-bg-purple">
+                  <el-text class="mx-1">{{ generalInfo }}</el-text>
+                </div>
+              </el-col>
+              <el-col :span="8">
+                <div class="grid-content ep-bg-purple" />
+              </el-col>
+              <el-col :span="8">
+                <div class="grid-content ep-bg-purple" />
+              </el-col>
+            </el-row>
+            <el-row :gutter="24" class="inner-row">
+              <el-col :span="8">
+                <div class="grid-content ep-bg-purple" />
+              </el-col>
+              <el-col :span="8">
+                <div class="grid-content ep-bg-purple" />
+              </el-col>
+              <el-col :span="8">
+                <div class="grid-content ep-bg-purple" />
+              </el-col>
+            </el-row>
+          </el-col>
+          <el-col :span="8">
+            <div class="grid-content ep-bg-purple" />
+          </el-col>
+        </el-row>
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
-
-  <main>
-    <TheWelcome />
-  </main>
+      </el-main>
+    </el-container>
+  </div>
 </template>
 
-<style scoped>
-header {
-  line-height: 1.5;
+<script>
+import { provide, ref } from 'vue';
+import CityNameInput from './components/CityNameInput.vue';
+import SearchButton from './components/SearchButton.vue';
+import { fetchGeneralInfo } from './api/FetchGeneralInfo.js';
+
+export default {
+  name: "App",
+  components: {
+    CityNameInput,
+    SearchButton
+  },
+  setup() {
+    const cityName = ref('');
+    const generalInfo = ref('');
+    provide("cityName", cityName);
+
+    const fetchData = async () => {
+      if (cityName.value) {
+        console.log("开始搜索");
+        generalInfo.value = await fetchGeneralInfo(cityName.value);
+        console.log(generalInfo.value);
+      }
+    };
+
+    return {
+      generalInfo,
+      fetchData,
+    };
+  }
+};
+</script>
+
+<style>
+.common-layout {
+  height: 100%;
+  width: 100%;
+  background-color: rgb(154, 199, 255);
 }
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
+.el-container {
+  height: 100%;
+  width: 100%;
 }
 
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
+.el-header {
+  display: flex;
+  /* 使用Flexbox布局 */
+  justify-content: center;
+  /* 水平居中 */
+  align-items: center;
+  /* 垂直居中 */
+  min-height: 100px;
+  height: 20%;
+}
 
-  .logo {
-    margin: 0 2rem 0 0;
-  }
+.el-main {
+  min-height: 400px;
+  height: 80%;
+}
 
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
+.el-text {
+  color: black;
+}
+
+.el-row {
+  padding: 1rem;
+}
+
+.outer-row {
+  height: 100%;
+}
+
+.inner-row {
+  height: 50%;
+}
+
+.el-row:last-child {
+  padding-bottom: 0;
+}
+
+.el-row:first-child {
+  padding-top: 0;
+}
+
+.el-col {
+  border-radius: 4px;
+}
+
+.grid-content {
+  padding: 1rem;
+  background-color: white;
+  border-radius: 4px;
+  min-height: 36px;
+  height: 100%;
+  width: 100%;
 }
 </style>
