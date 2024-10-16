@@ -26,37 +26,40 @@ async function getLngLatAndDrawBoundsFn() {
   }
   console.log("开始定位" + cityName.value);
   district.setLevel("district");
-  await district.search(cityName.value, function (status, result) {
-    if (status == "complete") {
-      if (polygon) {
-        map.value.remove(polygon);
-        polygon = null;
+  const result = await new Promise((resolve, reject) => {
+    district.search(cityName.value, function (status, result) {
+      if (status === "complete") {
+        resolve(result);
+      } else {
+        reject('搜索失败，请正确填写名称或更新其他名称');
       }
-      if (!result || !result.districtList || !result.districtList[0]) {
-        console.warn('请正确填写名称或更新其他名称');
-        return;
-      }
-      let bounds = result.districtList[0].boundaries;
-      Lng = result.districtList[0].center.lng;
-      Lat = result.districtList[0].center.lat;
-      console.log({ Lng, Lat });
-      if (bounds) {
-        for (let i = 0; i < bounds.length; i++) {
-          bounds[i] = [bounds[i]];
-        }
-        polygon = new AMap.Polygon({
-          strokeWeight: 1,
-          path: bounds,
-          fillOpadistrict: 0.4,
-          fillColor: '#80d8ff',
-          strokeColor: '#0091ea',
-        });
-        map.value.add(polygon);
-        map.value.setFitView(polygon);
-      }
-    }
+    });
   });
-  console.log({ Lng, Lat });
+  if (polygon) {
+    map.value.remove(polygon);
+    polygon = null;
+  }
+  if (!result || !result.districtList || !result.districtList[0]) {
+    console.warn('请正确填写名称或更新其他名称');
+    return;
+  }
+  let bounds = result.districtList[0].boundaries;
+  Lng = result.districtList[0].center.lng;
+  Lat = result.districtList[0].center.lat;
+  if (bounds) {
+    for (let i = 0; i < bounds.length; i++) {
+      bounds[i] = [bounds[i]];
+    }
+    polygon = new AMap.Polygon({
+      strokeWeight: 1,
+      path: bounds,
+      fillOpadistrict: 0.4,
+      fillColor: '#80d8ff',
+      strokeColor: '#0091ea',
+    });
+    map.value.add(polygon);
+    map.value.setFitView(polygon);
+  }
   return { Lng, Lat };
 };
 

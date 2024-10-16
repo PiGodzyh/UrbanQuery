@@ -58,12 +58,8 @@ provide("cityName", cityName);
 let LngLat = null;
 
 async function fetchData() {
-  gaodeMapRef.value.getLngLatAndDrawBounds()
-    .then((result) => {
-      LngLat = result;
-      console.log(LngLat);
-    })
-
+  LngLat = await gaodeMapRef.value.getLngLatAndDrawBounds()
+  console.log(LngLat);
   generalInfo.value = await fetchGeneralInfo(cityName.value);
 }
 </script>
