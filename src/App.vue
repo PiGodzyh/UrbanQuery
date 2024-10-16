@@ -2,7 +2,7 @@
   <div class="common-layout">
     <el-container>
       <el-header>
-        <CityNameInput />
+        <CityNameInput v-model="cityName" />
         <SearchButton @click="fetchData" />
       </el-header>
       <el-main>
@@ -34,46 +34,38 @@
             </el-row>
           </el-col>
           <el-col :span="8">
-            <div class="grid-content ep-bg-purple" />
+            <div class="grid-content ep-bg-purple">
+              <gaodeMap ref="gaodeMapRef" />
+            </div>
           </el-col>
         </el-row>
-
       </el-main>
     </el-container>
   </div>
 </template>
 
-<script>
+<script setup>
 import { provide, ref } from 'vue';
 import CityNameInput from './components/CityNameInput.vue';
 import SearchButton from './components/SearchButton.vue';
+import gaodeMap from './components/gaodeMap.vue';
 import { fetchGeneralInfo } from './api/FetchGeneralInfo.js';
 
-export default {
-  name: "App",
-  components: {
-    CityNameInput,
-    SearchButton
-  },
-  setup() {
-    const cityName = ref('');
-    const generalInfo = ref('');
-    provide("cityName", cityName);
+const cityName = ref('');
+const generalInfo = ref('');
+const gaodeMapRef = ref(null);
+provide("cityName", cityName);
+let LngLat = null;
 
-    const fetchData = async () => {
-      if (cityName.value) {
-        console.log("开始搜索");
-        generalInfo.value = await fetchGeneralInfo(cityName.value);
-        console.log(generalInfo.value);
-      }
-    };
+async function fetchData() {
+  gaodeMapRef.value.getLngLatAndDrawBounds()
+    .then((result) => {
+      LngLat = result;
+      console.log(LngLat);
+    })
 
-    return {
-      generalInfo,
-      fetchData,
-    };
-  }
-};
+  generalInfo.value = await fetchGeneralInfo(cityName.value);
+}
 </script>
 
 <style>
@@ -90,11 +82,8 @@ export default {
 
 .el-header {
   display: flex;
-  /* 使用Flexbox布局 */
   justify-content: center;
-  /* 水平居中 */
   align-items: center;
-  /* 垂直居中 */
   min-height: 100px;
   height: 20%;
 }

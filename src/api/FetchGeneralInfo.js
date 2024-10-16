@@ -11,7 +11,7 @@ import axios from "axios"
  * 参数：content
  * 返回值：summary
  */
-function getSummary(content) {
+async function getSummary(content) {
     let preChar = "";
     let summary = "";
     let isText = true;
@@ -52,6 +52,7 @@ function getSummary(content) {
  * 返回值：summary_gbk
  */
 export async function fetchGeneralInfo(cityName) {
+    console.log("开始获取基本数据")
     const params = {
         action: "query",
         format: "json",
@@ -65,7 +66,7 @@ export async function fetchGeneralInfo(cityName) {
     try {
         const response = await axios.get(url, { params }); // 使用 await 等待 Promise 解决
         const content = response.data.query.pages[0].revisions[0].slots.main.content;
-        const summary = getSummary(content);
+        const summary = await getSummary(content);
         console.log(summary);
         return summary; // 返回处理后的数据
     } catch (error) {
