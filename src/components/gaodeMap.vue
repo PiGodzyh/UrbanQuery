@@ -5,7 +5,7 @@
 <script setup>
 import { inject, onMounted, onUnmounted, ref } from "vue";
 import AMapLoader from "@amap/amap-jsapi-loader";
-import { key, sCode } from "@/api/gaodeMapConfig";
+import { key, sCode } from "@/api/gaodeMapConfig.js";
 
 const map = ref(null);
 const cityName = inject("cityName");
@@ -65,14 +65,43 @@ async function getLngLatAndDrawBoundsFn() {
 
 //获取天气
 async function getWeatherFn() {
-  let weather = new AMap.Weather();
-  weather.getLive(cityName.value, function (err, data) {
-    console.log(err, data);
-    
-    //err 正确时返回 null
-    //data 返回实时天气数据，返回数据见下表
+  let Weather = new AMap.Weather();
+  const weather = await new Promise((resolve, reject) => {
+    Weather.getLive(cityName.value, function (err, data) {
+      if (!err) {
+        resolve(data);
+      }
+      else {
+        reject("天气获取失败");
+      }
+    });
   });
+  const weatherTable = [
+    {
+      prop: "数据时间",
+      data: weather.reportTime
+    },
+    {
+      prop: "温度",
+      data: weather.temperature
+    },
+    {
+      prop: "天气",
+      data: weather.weather
+    },
+    {
+      prop: "风向",
+      data: weather.windDirection
+    },
+    {
+      prop: "风力",
+      data: weather.windPower
+    },
+  ]
+  console.log(weather);
+  return weatherTable;
 }
+
 onMounted(() => {
   window._AMapSecurityConfig = {
     securityJsCode: sCode,

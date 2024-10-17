@@ -36,11 +36,10 @@
               <el-col :span="8">
                 <div class="grid-content ep-bg-purple">
                   <h3>实时天气</h3>
-                  <ul>
-                    <li v-for="item in weather" :key="item.id">
-                      <a :href="item.prop" target="_blank">{{ item.value }}</a>
-                    </li>
-                  </ul>
+                  <el-table :data="weatherTable" style="width: 100%">
+                    <el-table-column prop="prop" label="指标" />
+                    <el-table-column prop="data" label="值" />
+                  </el-table>
                 </div>
               </el-col>
               <el-col :span="8">
@@ -80,7 +79,7 @@ const generalInfo = ref('');
 const gaodeMapRef = ref(null);
 const EnvironmentRef = ref(null);
 const newsList = ref([]);
-const weather = ref([]);
+const weatherTable = ref([]);
 provide("cityName", cityName);
 let LngLat = null;
 
@@ -88,8 +87,8 @@ async function fetchData() {
   LngLat = await gaodeMapRef.value.getLngLatAndDrawBounds()
   EnvironmentRef.value.getEnvironment(LngLat);
   newsList.value = await getNews(cityName.value);
-  weather.value = await gaodeMapRef.value.getWeather();
-  console.log(weather.value);
+  weatherTable.value = await gaodeMapRef.value.getWeather();
+  console.log(weatherTable.value);
   generalInfo.value = await fetchGeneralInfo(cityName.value);
 
 }
