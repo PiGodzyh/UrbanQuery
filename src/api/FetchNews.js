@@ -14,6 +14,7 @@ const apiKey = "7efc76ce3a57b8d971116ee9542f250a";  // 在个人中心->我的�
  * 参数：cityName
  */
 export async function getNews(cityName) {
+    /*
     return [
         {
             "id": "69a876ebbb6e5dfca9b930ebbe0023d1",
@@ -33,6 +34,7 @@ export async function getNews(cityName) {
             "url": "https:\/\/www.bj.chinanews.com\/news\/2024\/0917\/96410.html",
             "source": ""
         }];
+        */
     const data = cityName.slice(0, -1);//去除“省/市”字样
     const requestParams = {
         key: apiKey,
@@ -44,7 +46,6 @@ export async function getNews(cityName) {
     // 发起接口网络请求
     const response = await axios.get(apiUrl, { params: requestParams });
     const responseResult = response.data.result.list;
-    // 网络请求成功。可依据业务逻辑和接口文档说明自行处理。
     console.log(responseResult);
     return responseResult;
 }
