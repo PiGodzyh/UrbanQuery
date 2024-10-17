@@ -20,7 +20,14 @@
                 </div>
               </el-col>
               <el-col :span="8">
-                <div class="grid-content ep-bg-purple" />
+                <div class="grid-content ep-bg-purple">
+                  <h3>新闻列表</h3>
+                  <ul>
+                    <li v-for="item in newsList" :key="item.id">
+                      <a :href="item.url" target="_blank">{{ item.title }}</a>
+                    </li>
+                  </ul>
+                </div>
               </el-col>
             </el-row>
             <el-row :gutter="24" class="inner-row">
@@ -53,18 +60,21 @@ import SearchButton from './components/SearchButton.vue';
 import gaodeMap from './components/gaodeMap.vue';
 import Environment from './components/Environment.vue';
 import { fetchGeneralInfo } from './api/FetchGeneralInfo.js';
+import { getNews } from './api/FetchNews.js';
 
 const cityName = ref('');
 const generalInfo = ref('');
 const gaodeMapRef = ref(null);
 const EnvironmentRef = ref(null);
+const newsList = ref([]);
 provide("cityName", cityName);
 let LngLat = null;
 
 async function fetchData() {
   LngLat = await gaodeMapRef.value.getLngLatAndDrawBounds()
-  console.log(LngLat);
   EnvironmentRef.value.getEnvironment(LngLat);
+  newsList.value = await getNews(cityName.value);
+  console.log(newsList.value);
   generalInfo.value = await fetchGeneralInfo(cityName.value);
 }
 </script>
@@ -130,10 +140,11 @@ async function fetchData() {
   min-height: 36px;
   height: 100%;
   width: 100%;
-  overflow: auto; /* 当内容溢出时启用滚动条 */
+  overflow: auto;
+  /* 当内容溢出时启用滚动条 */
 }
 
-.el-text{
+.el-text {
   height: 100%;
 }
 </style>

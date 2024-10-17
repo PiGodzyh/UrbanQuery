@@ -23,6 +23,11 @@ export default defineConfig({
         target: 'https://zh.wikipedia.org',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/wikipediaAPI/, '')
+      },
+      '/juhe': {
+        target: 'http://apis.juhe.cn/fapigx',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/juhe/, '')
       }
     }
   },
