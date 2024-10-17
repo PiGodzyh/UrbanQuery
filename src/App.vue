@@ -11,17 +11,19 @@
             <el-row :gutter="24" class="inner-row">
               <el-col :span="8">
                 <div class="grid-content ep-bg-purple">
+                  <h3>简介</h3>
                   <el-text class="mx-1">{{ generalInfo }}</el-text>
                 </div>
               </el-col>
               <el-col :span="8">
                 <div class="grid-content ep-bg-purple">
+                  <h3>空气质量</h3>
                   <Environment ref="EnvironmentRef" />
                 </div>
               </el-col>
               <el-col :span="8">
                 <div class="grid-content ep-bg-purple">
-                  <h3>新闻列表</h3>
+                  <h3>新闻</h3>
                   <ul>
                     <li v-for="item in newsList" :key="item.id">
                       <a :href="item.url" target="_blank">{{ item.title }}</a>
@@ -32,13 +34,24 @@
             </el-row>
             <el-row :gutter="24" class="inner-row">
               <el-col :span="8">
-                <div class="grid-content ep-bg-purple" />
+                <div class="grid-content ep-bg-purple">
+                  <h3>实时天气</h3>
+                  <ul>
+                    <li v-for="item in weather" :key="item.id">
+                      <a :href="item.prop" target="_blank">{{ item.value }}</a>
+                    </li>
+                  </ul>
+                </div>
               </el-col>
               <el-col :span="8">
-                <div class="grid-content ep-bg-purple" />
+                <div class="grid-content ep-bg-purple">
+                  <h3>经济</h3>
+                </div>
               </el-col>
               <el-col :span="8">
-                <div class="grid-content ep-bg-purple" />
+                <div class="grid-content ep-bg-purple">
+                  <h3>数据</h3>
+                </div>
               </el-col>
             </el-row>
           </el-col>
@@ -67,6 +80,7 @@ const generalInfo = ref('');
 const gaodeMapRef = ref(null);
 const EnvironmentRef = ref(null);
 const newsList = ref([]);
+const weather = ref([]);
 provide("cityName", cityName);
 let LngLat = null;
 
@@ -74,8 +88,10 @@ async function fetchData() {
   LngLat = await gaodeMapRef.value.getLngLatAndDrawBounds()
   EnvironmentRef.value.getEnvironment(LngLat);
   newsList.value = await getNews(cityName.value);
-  console.log(newsList.value);
+  weather.value = await gaodeMapRef.value.getWeather();
+  console.log(weather.value);
   generalInfo.value = await fetchGeneralInfo(cityName.value);
+
 }
 </script>
 

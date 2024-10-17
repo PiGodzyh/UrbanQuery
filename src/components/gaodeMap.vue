@@ -63,6 +63,16 @@ async function getLngLatAndDrawBoundsFn() {
   return { Lng, Lat };
 };
 
+//获取天气
+async function getWeatherFn() {
+  let weather = new AMap.Weather();
+  weather.getLive(cityName.value, function (err, data) {
+    console.log(err, data);
+    
+    //err 正确时返回 null
+    //data 返回实时天气数据，返回数据见下表
+  });
+}
 onMounted(() => {
   window._AMapSecurityConfig = {
     securityJsCode: sCode,
@@ -70,7 +80,7 @@ onMounted(() => {
   AMapLoader.load({
     key: key,
     version: "2.0",
-    plugins: ["AMap.DistrictSearch"],
+    plugins: ["AMap.DistrictSearch", "AMap.Weather"],
   })
     .then((Amap) => {
       AMap = Amap;
@@ -90,6 +100,7 @@ onUnmounted(() => {
 
 defineExpose({
   getLngLatAndDrawBounds: getLngLatAndDrawBoundsFn,
+  getWeather: getWeatherFn,
 });
 </script>
 
