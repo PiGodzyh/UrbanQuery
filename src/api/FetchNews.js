@@ -45,7 +45,10 @@ export async function getNews(cityName) {
 
     // 发起接口网络请求
     const response = await axios.get(apiUrl, { params: requestParams });
+    console.log(response);
+    if(response.data.result==null){
+        return null;
+    }
     const responseResult = response.data.result.list;
-    console.log(responseResult);
     return responseResult;
 }

@@ -21,7 +21,7 @@
                   <Environment ref="EnvironmentRef" />
                 </div>
               </el-col>
-              
+
             </el-row>
             <el-row :gutter="24" class="inner-row">
               <el-col :span="12">
@@ -77,11 +77,10 @@ let LngLat = null;
 async function fetchData() {
   LngLat = await gaodeMapRef.value.getLngLatAndDrawBounds()
   EnvironmentRef.value.getEnvironment(LngLat);
-  newsList.value = await getNews(cityName.value);
-  weatherTable.value = await gaodeMapRef.value.getWeather();
-  console.log(weatherTable.value);
   generalInfo.value = await fetchGeneralInfo(cityName.value);
-
+  weatherTable.value = await gaodeMapRef.value.getWeather();
+  newsList.value = await getNews(cityName.value);
+  console.log(weatherTable.value);
 }
 </script>
 
